@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "title": "Pfad des Nordwinds",
+    "description": "Laufe mindestens 5 km in einem Stück. Spüre den Wind im Gesicht und lasse die Gedanken fliegen.",
+    "icon": "compass.jpg",
+    "type": "Ausdauer",
+    "unlocked": true,
+    "done":true
+  },
+  {
+    "id": 2,
+    "title": "Die stille Klinge",
+    "description": "Führe ein vollständiges Krafttraining durch (z.B. 30 Minuten mit Fokus auf Oberkörper). Stärke beginnt im Inneren.",
+    "icon": "sword.png",
+    "type": "Kraft",
+    "unlocked": true,
+    "done":false
+  },
+  {
+    "id": 3,
+    "title": "Die Stimmen der Alten",
+    "description": "Meditation – mindestens 10 Minuten in Stille verweilen. Höre, was dir sonst verborgen bleibt.",
+    "icon": "book.png",
+    "type": "Geist",
+    "unlocked": true,
+    "done":true
+  }
+]

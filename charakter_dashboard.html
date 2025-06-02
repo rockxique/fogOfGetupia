@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <!-- Metadaten und Seitentitel -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Heldenbrief – Charakterdashboard</title>
+
+    <!-- Verknüpfung mit externer CSS-Datei -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Für Darstellung als App -->
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Heldenbrief">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+
+
+
+    <!-- Zusätzliche eingebettete Styles (könnten bei Bedarf in CSS-Datei ausgelagert werden) -->
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f0e6;
+            color: #333;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #5a2a0c;
+        }
+
+        .attribute {
+            margin-bottom: 10px;
+        }
+
+        .bar {
+            height: 16px;
+            background-color: #ccc;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .bar-inner {
+            height: 100%;
+            background-color: #6b4226;
+            text-align: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Hauptcontainer für alle Inhalte -->
+    <div class="container">
+        <!-- Charaktername -->
+        <h1>Charakter: <span id="name"></span></h1>
+
+        <!-- Erfahrung und Fortschrittsbalken -->
+        <div class="section">
+            <strong>Stufe:</strong> <span id="level"></span><br>
+            <strong>Erfahrung:</strong> <span id="xp"></span> / <span id="xp_next_level"></span>
+            <div class="bar">
+                <div id="xp_bar" class="bar-inner"></div>
+            </div>
+        </div>
+
+        <!-- Attribut-Anzeige -->
+        <div class="section">
+            <h2>Attribute</h2>
+            <div id="attributes"></div>
+        </div>
+
+        <!-- Aktive Kartenanzeige -->
+        <div class="section">
+            <h2>Aktive Karten</h2>
+            <div id="card-list"></div>
+        </div>
+
+        <!-- Letztes Update -->
+        <div class="section">
+            <small>Letztes Update: <span id="last_update"></span></small>
+        </div>
+    </div>
+
+    <!-- Popup-Fenster für Kartendetails -->
+    <div id="card-popup" class="card-popup hidden">
+        <div class="card-popup-content">
+            <span id="close-popup" class="close-btn">&times;</span>
+            <img id="popup-icon" src="" alt="Icon" class="popup-icon">
+            <h2 id="popup-title"></h2>
+            <p id="popup-description"></p>
+        </div>
+    </div>
+
+    <!-- JavaScript zum Laden und Anzeigen der JSON-Daten -->
+    <script>
+        // Charakterdaten und Questkarten aus JSON laden und ins Dashboard einsetzen
+        Promise.all([
+            fetch("character.json").then(res => res.json()),
+            fetch("quests.json").then(res => res.json())
+        ]).then(([CharacterData, questCards]) => {
+            // Grunddaten einsetzen
+            document.getElementById('name').textContent = CharacterData.name;
+            document.getElementById('level').textContent = CharacterData.level;
+            document.getElementById('xp').textContent = CharacterData.xp;
+            document.getElementById('xp_next_level').textContent = CharacterData.xp_next_level;
+            document.getElementById('last_update').textContent = CharacterData.last_update;
+
+            // XP-Fortschritt berechnen und anzeigen
+            const xpPercent = Math.min(100, (CharacterData.xp / CharacterData.xp_next_level) * 100);
+            const xpBar = document.getElementById('xp_bar');
+            xpBar.style.width = xpPercent + '%';
+            xpBar.textContent = Math.floor(xpPercent) + '%';
+
+            // Attribute dynamisch anzeigen
+            const attrContainer = document.getElementById('attributes');
+            for (let key in CharacterData.attributes) {
+                const attr = CharacterData.attributes[key];
+                const percent = Math.min(100, (attr.progress) * 100);
+                const div = document.createElement('div');
+                div.className = 'attribute';
+                div.innerHTML = `<strong>${key}</strong> (${attr.value} / ${attr.max})<br>
+                                     <div class="bar"><div class="bar-inner" style="width:${percent}%; background-color: #367345;">${percent.toFixed(0)}%</div></div>`;
+                attrContainer.appendChild(div);
+            }
+            // Aktive Karten-ID-Liste aus dem Charakterprofil
+            const activeCardIDs = CharacterData.active_cards;
+
+            // Filtere die vollständige Kartenliste nach den aktiven IDs
+            const activeCards = questCards.filter(card => activeCardIDs.includes(card.id));
+
+            // Karten dynamisch auflisten
+            const cardList = document.getElementById("card-list");
+            cardList.innerHTML = "";
+
+            activeCards.forEach((card) => {
+                const cardItem = document.createElement("div");
+                cardItem.className = "card-entry";
+
+                // Wrapper für Icon + Overlay
+                const iconWrapper = document.createElement("div");
+                iconWrapper.className = "card-icon-wrapper";
+
+                const icon = document.createElement("img");
+                icon.src = card.icon;
+                icon.className = "card-icon";
+
+                iconWrapper.appendChild(icon);
+
+                // Klickverhalten für Popup
+                icon.addEventListener("click", () => {
+                    document.getElementById("popup-icon").src = card.icon;
+                    document.getElementById("popup-title").textContent = card.title;
+                    document.getElementById("popup-description").textContent = card.description;
+                    document.getElementById("card-popup").classList.remove("hidden");
+                });
+
+
+
+                // ✅ Overlay-Haken (wenn erledigt)
+                if (card.done) {
+                    const checkmarkOverlay = document.createElement("span");
+                    checkmarkOverlay.className = "checkmark-overlay";
+                    checkmarkOverlay.textContent = "✔️";
+                    iconWrapper.appendChild(checkmarkOverlay);
+                }
+
+                // Titel der Karte
+                const title = document.createElement("span");
+                title.textContent = card.title;
+                title.className = "card-title";
+
+                cardItem.appendChild(iconWrapper);
+                cardItem.appendChild(title);
+                cardList.appendChild(cardItem);
+            });
+
+
+            // Popup schließen
+            document.getElementById("close-popup").addEventListener("click", () => {
+                document.getElementById("card-popup").classList.add("hidden");
+            });
+        });
+    </script>
+</body>
+
+</html>
