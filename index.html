@@ -101,6 +101,26 @@
             <p id="popup-description"></p>
         </div>
     </div>
+    <!-- Tracken neuer Aktivitäten -->
+    <div id="activity-form" class="p-4 bg-gray-100 rounded-xl shadow-md w-full max-w-md">
+        <h2 class="text-xl font-bold mb-2">Aktivität hinzufügen</h2>
+        <label for="type" class="block">Aktivität:</label>
+        <select id="type" class="mb-2 w-full p-1 rounded">
+            <option>Laufen</option>
+            <option>Radfahren</option>
+            <option>Krafttraining</option>
+            <option>Stabi</option>
+        </select>
+
+        <label for="details" class="block">Details:</label>
+        <textarea id="details" rows="3" class="mb-2 w-full p-1 rounded"></textarea>
+
+        <button onclick="calculateProgress()" class="bg-blue-500 text-white px-4 py-1 rounded mr-2">Berechne
+            Fortschritt</button>
+        <button onclick="saveActivity()" class="bg-green-500 text-white px-4 py-1 rounded">Bestätigen</button>
+
+        <div id="progress-result" class="mt-4 text-sm text-gray-700"></div>
+    </div>
 
     <!-- JavaScript zum Laden und Anzeigen der JSON-Daten -->
     <script>
@@ -191,6 +211,42 @@
                 document.getElementById("card-popup").classList.add("hidden");
             });
         });
+
+        //Logik fürs Tracken der Aktivitäten
+        let activities = [];
+
+        function calculateProgress() {
+            const type = document.getElementById("type").value;
+            const details = document.getElementById("details").value;
+
+            // einfache Logik: Anpassbar!
+            let result = {
+                Stärke: 0,
+                Konstitution: 0,
+                Beweglichkeit: 0,
+            };
+
+            if (type === "Krafttraining") result.Stärke = 10;
+            if (type === "Laufen") result.Konstitution = 10;
+            if (type === "Radfahren") result.Konstitution = 7;
+            if (type === "Stabi") result.Stärke = 4;
+
+            document.getElementById("progress-result").innerText =
+                `🏋️ Fortschritt: Stärke +${result.Stärke}, Konstitution +${result.Konstitution}, Beweglichkeit +${result.Beweglichkeit}`;
+
+            // Zwischenspeichern
+            activities.push({
+                datum: new Date().toISOString().split("T")[0],
+                typ: type,
+                details: details,
+                attributgewinn: result,
+            });
+        }
+
+        function saveActivity() {
+            localStorage.setItem("getupia_activities", JSON.stringify(activities));
+            alert("Aktivität gespeichert! 🗃️");
+        }
     </script>
 </body>
 
