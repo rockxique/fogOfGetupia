@@ -11,6 +11,40 @@ body {
   color: #3b2f1e;
 }
 
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f0e6;
+  color: #333;
+  padding: 20px;
+}
+
+h1 {
+  color: #5a2a0c;
+}
+
+.attribute {
+  margin-bottom: 10px;
+}
+
+.bar {
+  height: 16px;
+  background-color: #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar-inner {
+  height: 100%;
+  background-color: #6b4226;
+  text-align: center;
+  color: white;
+  font-size: 12px;
+}
+
+.section {
+  margin-bottom: 25px;
+}
+
 .container {
   padding: 2rem;
   background-color: rgba(255, 255, 255, 0.6);
