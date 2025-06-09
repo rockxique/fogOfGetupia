@@ -7,6 +7,12 @@
     <title>Getupia – Karte</title>
     <!-- Verknüpfung mit externer CSS-Datei -->
     <link rel="stylesheet" href="style.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
 
 </head>
 
@@ -26,12 +32,34 @@
     <div class="map-container">
         <img src="Getupia.jpg" alt="Karte von Getupia">
     </div>
+    <div id="map" style="width: 100%; height: calc(100vh - 4rem);"></div>
+
 
     <script>
         function toggleMenu() {
             const menu = document.getElementById("side-menu");
             menu.classList.toggle("hidden");
         }
+        const map = L.map('map', {
+            crs: L.CRS.Simple, // einfache Koordinaten (nicht GPS)
+            minZoom: -1,
+            maxZoom: 4,
+            zoomControl: true,
+        });
+
+        // Bildgröße in Pixel (anpassen an dein Bild)
+        const w = 1024;
+        const h = 768;
+        const imageUrl = 'Getupia.jpg';
+
+        const bounds = [[0, 0], [h, w]];
+        L.imageOverlay(imageUrl, bounds).addTo(map);
+        map.fitBounds(bounds);
+
+        // Beispielmarker
+        const marker = L.marker([300, 500]).addTo(map);
+        marker.bindPopup("<b>Steinkreis</b><br>Hier beginnt deine Reise.");
+
     </script>
 
 </body>
