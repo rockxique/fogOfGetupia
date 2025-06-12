@@ -104,6 +104,15 @@
             fetch("character.json").then(res => res.json()),
             fetch("quests.json").then(res => res.json())
         ]).then(([CharacterData, questCards]) => {
+            //Motivationsspruch.. sinnvoll?
+            const motivation = [
+                "Ein Schritt nach dem anderen!",
+                "Dein Held wächst weiter! 🌟",
+                "XP sammeln macht stärker!",
+                "Nur wer dranbleibt, siegt! 💥"
+            ];
+            alert(motivation[Math.floor(Math.random() * motivation.length)]);
+
             // Grunddaten einsetzen
             document.getElementById('name').textContent = CharacterData.name;
             document.getElementById('level').textContent = CharacterData.level;
@@ -124,8 +133,17 @@
                 const percent = Math.min(100, (attr.progress) * 100);
                 const div = document.createElement('div');
                 div.className = 'attribute';
-                div.innerHTML = `<strong>${key}</strong> (${attr.value} / ${attr.max})<br>
-                                     <div class="bar"><div class="bar-inner" style="width:${percent}%; background-color: #367345;">${percent.toFixed(0)}%</div></div>`;
+                let icon = "";
+                switch (key) {
+                    case "Stärke": icon = "💪"; break;
+                    case "Konstitution": icon = "🏃"; break;
+                    case "Intelligenz": icon = "📚"; break;
+                    case "Beweglichkeit": icon = "🤸"; break;
+                    default: icon = "✨";
+                }
+
+                div.innerHTML = `<strong>${icon} ${key}</strong> (${attr.value} / ${attr.max})<br>
+<div class="bar"><div class="bar-inner" style="width:${percent}%; background-color: #367345;">${percent.toFixed(0)}%</div></div>`;
                 attrContainer.appendChild(div);
             }
             // Aktive Karten-ID-Liste aus dem Charakterprofil

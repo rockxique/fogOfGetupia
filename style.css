@@ -23,7 +23,14 @@ h1 {
 }
 
 .attribute {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.attribute-icon {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  margin-right: 8px;
 }
 
 .bar {
@@ -34,13 +41,23 @@ h1 {
 }
 
 .bar-inner {
+  height: 24px;
+  background: linear-gradient(90deg, #4caf50 0%, #81c784 100%);
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 12px;
+  transition: width 0.5s ease-in-out;
+}
+
+/*.bar-inner {  alt (und besser?)
   height: 100%;
   background-color: #6b4226;
   text-align: center;
   color: white;
   font-size: 12px;
 }
-
+*/
 .section {
   margin-bottom: 25px;
 }
