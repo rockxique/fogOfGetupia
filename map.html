@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="mapSaveManager.js"></script>
 
     <style>
         .fog {
@@ -33,111 +32,14 @@
 
     <div id="map" style="width: 100%; height: calc(100vh - 4rem);"></div>
 
-    <!-- Dev-Toolbar! -->
-    <div id="dev-toolbar" style="
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: rgba(0,0,0,0.7);
-    color: white;
-    padding: 10px;
-    border-radius: 8px;
-    z-index: 9999;
-    font-family: sans-serif;
-    font-size: 14px;
-">
-        <div><b>Dev-Tools</b></div>
-        <button onclick="resetMap()">Reset</button>
-        <button onclick="Startbereich()">Start</button>
-        <button onclick="Ruins()">Ruinen</button>
-        <button onclick="BrightWoods()">Wald</button>
-        <button onclick="saveExport()">Export</button>
-        <button onclick="saveImport()">Import</button>
-    </div>
-
     <script>
-
         function toggleMenu() {
             const menu = document.getElementById("side-menu");
             menu.classList.toggle("hidden");
         }
-
-        const w = 2048;
-        const h = 1536;
-        const imageUrl = 'Getupia.jpg';
-
-        const map = L.map('map', {
-            crs: L.CRS.Simple,
-            minZoom: -1,
-            maxZoom: 4,
-            zoomControl: true,
-        });
-
-        const bounds = [[0, 0], [h, w]];
-        L.imageOverlay(imageUrl, bounds).addTo(map);
-        map.fitBounds(bounds);
-
-        // Grid für Nebel
-        const rows = 24;
-        const cols = 32;
-        const tileW = w / cols;
-        const tileH = h / rows;
-
-        let fogTiles = [];
-
-        for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
-                const rect = L.rectangle([
-                    [row * tileH, col * tileW],
-                    [(row + 1) * tileH, (col + 1) * tileW]
-                ], {
-                    color: "#333",
-                    weight: 0,
-                    fillOpacity: 0.75,
-                    className: 'fog'
-                }).addTo(map);
-
-                fogTiles.push({ row, col, rect });
-            }
-        }
-
-        // Visuelle Tile-Freigabe (ohne speichern!)
-        window.revealTile = function(row, col) {
-            const tile = fogTiles.find(t => t.row === row && t.col === col);
-            if (tile) {
-                map.removeLayer(tile.rect);
-            }
-        }
-
-        // Hier jetzt erst nach Grid-Aufbau den Speicherzustand anwenden:
-        applyMapState();
-
-        //Einzelne Gebiete aufdecken
-        function Startbereich() {
-            for (let h = 5; h <= 14; h++) {
-                for (let b = 21; b <= 27; b++) {
-                    revealTileSave(h, b);
-                }
-            }
-        }
-
-        function Ruins() {
-            for (let h = 12; h <= 16; h++) {
-                for (let b = 15; b <= 20; b++) {
-                    revealTileSave(h, b);
-                }
-            }
-        }
-
-        function BrightWoods() {
-            for (let h = 11; h <= 15; h++) {
-                for (let b = 6; b <= 14; b++) {
-                    revealTileSave(h, b);
-                }
-            }
-        }
-
     </script>
+
+    <script src="map.js"></script>
 
 </body>
 
