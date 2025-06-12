@@ -18,6 +18,7 @@
     <meta name="apple-mobile-web-app-title" content="Heldenbrief">
     <link rel="apple-touch-icon" href="icons/icon-192.png">
 
+    <script src="saveManager.js"></script>
 
 
 
@@ -80,6 +81,13 @@
 
             <div id="progress-result" class="mt-4 text-sm text-gray-700"></div>
         </div>
+        <div class="section">
+            <h2>Speicherstand</h2>
+            <button onclick="exportSaveData()">⬇️ Exportieren</button>
+            <input type="file" id="importFile" style="display:none" onchange="importSaveData(this.files[0])">
+            <button onclick="document.getElementById('importFile').click()">⬆️ Importieren</button>
+        </div>
+
         <!-- Letztes Update -->
         <div class="section">
             <small>Letztes Update: <span id="last_update"></span></small>

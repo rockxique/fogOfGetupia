@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html lang="de">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Getupia – Karte</title>
-    <!-- Verknüpfung mit externer CSS-Datei -->
+    <title>Getupia</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-    </script>
-
-
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        .fog {
+            background-color: rgba(117, 116, 116, 0.75);
+            border: 1px solid rgba(117, 116, 116, 0.75);
+        }
+    </style>
 </head>
 
 <body>
@@ -29,37 +28,90 @@
         </nav>
     </div>
 
-    
     <div id="map" style="width: 100%; height: calc(100vh - 4rem);"></div>
-
 
     <script>
         function toggleMenu() {
             const menu = document.getElementById("side-menu");
             menu.classList.toggle("hidden");
         }
+
+        const w = 2048;
+        const h = 1536;
+        const imageUrl = 'Getupia.jpg';
+
         const map = L.map('map', {
-            crs: L.CRS.Simple, // einfache Koordinaten (nicht GPS)
+            crs: L.CRS.Simple,
             minZoom: -1,
             maxZoom: 4,
             zoomControl: true,
         });
 
-        // Bildgröße in Pixel (anpassen an dein Bild)
-        const w = 1024;
-        const h = 768;
-        const imageUrl = 'Getupia.jpg';
-
         const bounds = [[0, 0], [h, w]];
         L.imageOverlay(imageUrl, bounds).addTo(map);
         map.fitBounds(bounds);
 
-        // Beispielmarker
-        const marker = L.marker([300, 500]).addTo(map);
-        marker.bindPopup("<b>Steinkreis</b><br>Hier beginnt deine Reise.");
+        // Grid für Nebel
+        const rows = 24;
+        const cols = 32;
+        const tileW = w / cols;
+        const tileH = h / rows;
+
+        let fogTiles = [];
+
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                const rect = L.rectangle([
+                    [row * tileH, col * tileW],
+                    [(row + 1) * tileH, (col + 1) * tileW]
+                ], {
+                    color: "#333",
+                    weight: 0,
+                    fillOpacity: 0.75,
+                    className: 'fog'
+                }).addTo(map);
+
+                fogTiles.push({ row, col, rect });
+            }
+        }
+
+        // Zum Test: Beispielhafte Nebel-Auflösung (z.B. Startbereich frei)
+        function revealTile(row, col) {
+            const tile = fogTiles.find(t => t.row === row && t.col === col);
+            if (tile) {
+                map.removeLayer(tile.rect);
+            }
+        }
+
+        function Startbereich(){
+            for(let h = 5; h <= 14; h++){
+                for(let b = 21; b <= 27; b++){
+                    revealTile(h,b);
+                }
+            }
+        }
+
+        function Ruins(){
+            for(let h = 12; h <= 16; h++){
+                for(let b = 15; b <= 20; b++){
+                    revealTile(h,b);
+                }
+            }
+        }
+
+        function BrightWoods(){
+            for(let h = 11; h <= 15; h++){
+                for(let b = 6; b <= 14; b++){
+                    revealTile(h,b);
+                }
+            }
+        }
+        // Beispiel: Startbereich aufdecken
+        Startbereich();
+        Ruins();
+        BrightWoods();
 
     </script>
 
 </body>
-
 </html>
