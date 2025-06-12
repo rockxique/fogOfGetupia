@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,8 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="mapSaveManager.js"></script>
+
     <style>
         .fog {
             background-color: rgba(117, 116, 116, 0.75);
@@ -30,7 +33,30 @@
 
     <div id="map" style="width: 100%; height: calc(100vh - 4rem);"></div>
 
+    <!-- Dev-Toolbar! -->
+    <div id="dev-toolbar" style="
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 9999;
+    font-family: sans-serif;
+    font-size: 14px;
+">
+        <div><b>Dev-Tools</b></div>
+        <button onclick="resetMap()">Reset</button>
+        <button onclick="Startbereich()">Start</button>
+        <button onclick="Ruins()">Ruinen</button>
+        <button onclick="BrightWoods()">Wald</button>
+        <button onclick="saveExport()">Export</button>
+        <button onclick="saveImport()">Import</button>
+    </div>
+
     <script>
+
         function toggleMenu() {
             const menu = document.getElementById("side-menu");
             menu.classList.toggle("hidden");
@@ -75,43 +101,44 @@
             }
         }
 
-        // Zum Test: Beispielhafte Nebel-Auflösung (z.B. Startbereich frei)
-        function revealTile(row, col) {
+        // Visuelle Tile-Freigabe (ohne speichern!)
+        window.revealTile = function(row, col) {
             const tile = fogTiles.find(t => t.row === row && t.col === col);
             if (tile) {
                 map.removeLayer(tile.rect);
             }
         }
 
-        function Startbereich(){
-            for(let h = 5; h <= 14; h++){
-                for(let b = 21; b <= 27; b++){
-                    revealTile(h,b);
+        // Hier jetzt erst nach Grid-Aufbau den Speicherzustand anwenden:
+        applyMapState();
+
+        //Einzelne Gebiete aufdecken
+        function Startbereich() {
+            for (let h = 5; h <= 14; h++) {
+                for (let b = 21; b <= 27; b++) {
+                    revealTileSave(h, b);
                 }
             }
         }
 
-        function Ruins(){
-            for(let h = 12; h <= 16; h++){
-                for(let b = 15; b <= 20; b++){
-                    revealTile(h,b);
+        function Ruins() {
+            for (let h = 12; h <= 16; h++) {
+                for (let b = 15; b <= 20; b++) {
+                    revealTileSave(h, b);
                 }
             }
         }
 
-        function BrightWoods(){
-            for(let h = 11; h <= 15; h++){
-                for(let b = 6; b <= 14; b++){
-                    revealTile(h,b);
+        function BrightWoods() {
+            for (let h = 11; h <= 15; h++) {
+                for (let b = 6; b <= 14; b++) {
+                    revealTileSave(h, b);
                 }
             }
         }
-        // Beispiel: Startbereich aufdecken
-        Startbereich();
-        Ruins();
-        BrightWoods();
 
     </script>
 
 </body>
+
 </html>
