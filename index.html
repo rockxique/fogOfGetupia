@@ -104,14 +104,6 @@
             fetch("character.json").then(res => res.json()),
             fetch("quests.json").then(res => res.json())
         ]).then(([CharacterData, questCards]) => {
-            //Motivationsspruch.. sinnvoll?
-            const motivation = [
-                "Ein Schritt nach dem anderen!",
-                "Dein Held wächst weiter! 🌟",
-                "XP sammeln macht stärker!",
-                "Nur wer dranbleibt, siegt! 💥"
-            ];
-            alert(motivation[Math.floor(Math.random() * motivation.length)]);
 
             // Grunddaten einsetzen
             document.getElementById('name').textContent = CharacterData.name;
@@ -120,11 +112,24 @@
             document.getElementById('xp_next_level').textContent = CharacterData.xp_next_level;
             document.getElementById('last_update').textContent = CharacterData.last_update;
 
-            // XP-Fortschritt berechnen und anzeigen
+            // XP-Fortschritt berechnen und dynamisch anzeigen
+            function animateXPBar(xpBar, targetPercent) {
+                let currentPercent = 0;
+                const interval = setInterval(() => {
+                    if (currentPercent >= targetPercent) {
+                        currentPercent = targetPercent;
+                        clearInterval(interval);
+                    }
+                    xpBar.style.width = currentPercent + '%';
+                    xpBar.textContent = Math.floor(currentPercent) + '%';
+                    currentPercent += 1;  // Schrittgröße: 1% pro Tick (kann man auch feiner machen)
+                }, 15);  // Geschwindigkeit (15 ms pro Tick = schnell & smooth)
+            }
+
             const xpPercent = Math.min(100, (CharacterData.xp / CharacterData.xp_next_level) * 100);
             const xpBar = document.getElementById('xp_bar');
-            xpBar.style.width = xpPercent + '%';
-            xpBar.textContent = Math.floor(xpPercent) + '%';
+            animateXPBar(xpBar, xpPercent);
+
 
             // Attribute dynamisch anzeigen
             const attrContainer = document.getElementById('attributes');
