@@ -53,7 +53,7 @@ h2 {
 .bar-inner {
   height: 100%;
   /* nimmt nun automatisch die Höhe der .bar an */
-  background: linear-gradient(90deg, #4caf50 0%, #81c784 100%);
+  /*background: linear-gradient(90deg, #4caf50 0%, #81c784 100%);*/
   color: white;
   font-weight: bold;
   text-align: center;

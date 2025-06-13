@@ -45,7 +45,7 @@
             <strong>Stufe:</strong> <span id="level"></span><br>
             <strong>Erfahrung:</strong> <span id="xp"></span> / <span id="xp_next_level"></span>
             <div class="bar">
-                <div id="xp_bar" class="bar-inner"></div>
+                <div id="xp_bar" class="bar-inner" style = background-color:rgb(40,210,17) ></div>
             </div>
         </div>
 
@@ -144,20 +144,25 @@
             for (let key in CharacterData.attributes) {
                 const attr = CharacterData.attributes[key];
                 const percent = Math.min(100, (attr.progress) * 100);
+                const safeKey = key.replace(/[^a-zA-Z0-9]/g, ''); //Umlaute weg
+                const barId = `attr_bar_${safeKey}`;  // Einzigartige ID pro Attribut
                 const div = document.createElement('div');
                 div.className = 'attribute';
-                let icon = "";
+                let icon = "", color = "#367345";
                 switch (key) {
-                    case "Stärke": icon = "💪"; break;
-                    case "Konstitution": icon = "🏃"; break;
-                    case "Intelligenz": icon = "📚"; break;
-                    case "Beweglichkeit": icon = "🤸"; break;
+                    case "Stärke": icon = "💪";color = "#e74c3c"; break;
+                    case "Konstitution": icon = "🏃";color = "#27ae60"; break;
+                    case "Intelligenz": icon = "🧠"; color = "#2980b9"; break;
+                    case "Beweglichkeit": icon = "🤸";color = "#f39c12"; break;
                     default: icon = "✨";
                 }
 
                 div.innerHTML = `<strong>${icon} ${key}</strong> (${attr.value} / ${attr.max})<br>
-<div class="bar"><div class="bar-inner" style="width:${percent}%; background-color: #367345;">${percent.toFixed(0)}%</div></div>`;
+<div class="bar"><div id="${barId}" class="bar-inner" style="width:${percent}%; background-color: ${color};">0%</div></div>`;
                 attrContainer.appendChild(div);
+
+                // Animation direkt starten
+                animateXPBar(document.getElementById(barId), percent);
             }
             // Aktive Karten-ID-Liste aus dem Charakterprofil
             const activeCardIDs = CharacterData.active_cards;
